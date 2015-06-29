@@ -302,6 +302,7 @@ $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\rttela.dll", "c:\windo
 try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\satela.dll", "c:\windows\olesrv\satela.tlb", "")
 "Satela Instalado com Sucesso" } catch { }
+try{
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\tfrelat.dll", "c:\windows\olesrv\tfrelat.tlb", "")
 "Tfrelat Instalado com Sucesso" } catch { }
 try {
