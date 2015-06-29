@@ -103,7 +103,7 @@ ForEach ($file in $files) {
     {
         "$file encontrado! Iniciando instalação..."
         $executa = $path + "\" + $file
-        Start-Process $executa -ArgumentList "-s /s" -wait -ErrorAction SilentlyContinue
+        Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
         "Componentes COM+ Extraídos com sucesso!`n"
         Remove-Item $executa -ea SilentlyContinue
     }
@@ -111,7 +111,7 @@ ForEach ($file in $files) {
     {
         "$file encontrado! Iniciando instalação..."
         $executa = $path + "\" + $file
-        Start-Process $executa -ArgumentList "-s /s" -wait -ErrorAction SilentlyContinue
+        Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
         "Componentes COM+ (Servidor) Extraídos com sucesso!`n"
         Remove-Item $executa -ea SilentlyContinue
     } 
@@ -131,7 +131,7 @@ ForEach ($file in $files) {
                 "-------------------------------------------------`n"
             }
             $executa = $path + "\" + $file
-            Try { Start-Process $executa -ArgumentList "-s /s" -wait -ErrorAction SilentlyContinue } Catch { }
+            Try { Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue } Catch { }
             "ASP Frotaweb Extraído com Sucesso!"
             "Copiando Global.ASA...`n"
             Copy-Item $bckpath\Global.ASA c:\frotaweb\global.asa | Out-Null
@@ -141,7 +141,7 @@ ForEach ($file in $files) {
     if ($file.fullName -match "Dic*")
     {
         $dicionario = $path + "\" + $file
-        Try { Start-Process $executa -ArgumentList "-s /s" -wait -ErrorAction SilentlyContinue } Catch { }
+        Try { Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue } Catch { }
         Copy-Item $dicionario c:\windows\Olesrv\$file | Out-Null
         Remove-Item $dicionario -ea SilentlyContinue
         $dicionario = "c:\windows\olesrv\" + $file
