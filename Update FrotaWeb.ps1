@@ -155,65 +155,158 @@ ForEach ($file in $files) {
 
 "Registrando Componentes no COM+`n"
 
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\absrelat.dll", "c:\windows\olesrv\absrelat.tlb", "")
-"AbsRelat Instalado com Sucesso"
+"AbsRelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\abstela.dll", "c:\windows\olesrv\abstela.tlb", "")
-"Abstela Instalado com Sucesso"
+"Abstela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\acesso.dll", "c:\windows\olesrv\acesso.tlb", "")
-"Acesso Instalado com Sucesso"
+"Acesso Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\artela.dll", "c:\windows\olesrv\artela.tlb", "")
+"Artela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\autela.dll", "c:\windows\olesrv\autela.tlb", "")
-"Autela Instalado com Sucesso"
+"Autela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\bi.dll", "c:\windows\olesrv\bi.tlb", "")
+"BI Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\bprelat.dll", "c:\windows\olesrv\bprelat.tlb", "")
-"Bprelat Instalado com Sucesso"
+"Bprelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\bptela.dll", "c:\windows\olesrv\bptela.tlb", "")
-"Bptela Instalado com Sucesso"
+"Bptela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\cltela.dll", "c:\windows\olesrv\cltela.tlb", "")
+"Cltela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\cmtela.dll", "c:\windows\olesrv\cmtela.tlb", "")
-"Cmtela Instalado com Sucesso"
+"Cmtela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\cmtela.dll", "c:\windows\olesrv\cmtela.tlb", "")
+"Cmtela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\consultas.dll", "c:\windows\olesrv\consultas.tlb", "")
-"Consultas Instalado com Sucesso"
+"Consultas Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\cotela.dll", "c:\windows\olesrv\cotela.tlb", "")
-"Cotela Instalado com Sucesso"
+"Cotela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\cptela.dll", "c:\windows\olesrv\cptela.tlb", "")
-"Cptela Instalado com Sucesso"
+"Cptela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\errrelat.dll", "c:\windows\olesrv\errrelat.tlb", "")
+"Errrelat Instalado com Sucesso" } catch { } 
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\esrelat.dll", "c:\windows\olesrv\esrelat.tlb", "")
-"Esrelat Instalado com Sucesso"
+"Esrelat Instalado com Sucesso" } catch { } 
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\estela.dll", "c:\windows\olesrv\estela.tlb", "")
-"Estela Instalado com Sucesso"
+"Estela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\eurelat.dll", "c:\windows\olesrv\eurelat.tlb", "")
+"Eurelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\eutela.dll", "c:\windows\olesrv\eutela.tlb", "")
+"Eutela Instalado com Sucesso" } catch { }
 try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\frotaweb.dll", "c:\windows\olesrv\frotaweb.tlb", "")
 "Frotaweb Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\firerelat.dll", "c:\windows\olesrv\firerelat.tlb", "")
+"Firerelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\fitela.dll", "c:\windows\olesrv\fitela.tlb", "")
+"fitela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\frotasaas.dll", "c:\windows\olesrv\frotasaas.tlb", "")
+"FrotaSAS Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\frrelat.dll", "c:\windows\olesrv\frrelat.tlb", "")
+"Frrelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\frtela.dll", "c:\windows\olesrv\frtela.tlb", "")
+"Frtela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\gatela.dll", "c:\windows\olesrv\gatela.tlb", "")
-"Gatela Instalado com Sucesso"
+"Gatela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\lirelat.dll", "c:\windows\olesrv\lirelat.tlb", "")
-"Lirelat Instalado com Sucesso"
+"Lirelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\litela.dll", "c:\windows\olesrv\litela.tlb", "")
-"Litela Instalado com Sucesso"
-$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\marelat.dll", "c:\windows\olesrv\marelat.tlb", "")
-"Marelat Instalado com Sucesso"
+"Litela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\lorelat.dll", "c:\windows\olesrv\lorelat.tlb", "")
+"Lorelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\lorelat.dll", "c:\windows\olesrv\lorelat.tlb", "")
+"Lorelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\lotela.dll", "c:\windows\olesrv\lotela.tlb", "")
+"Lotela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\matela.dll", "c:\windows\olesrv\matela.tlb", "")
-"Matela Instalado com Sucesso"
+"Matela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\nftela.dll", "c:\windows\olesrv\nftela.tlb", "")
+"Nftela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\ocrelat.dll", "c:\windows\olesrv\ocrelat.tlb", "")
-"Ocrelat Instalado com Sucesso"
+"Ocrelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\octela.dll", "c:\windows\olesrv\octela.tlb", "")
-"Octela Instalado com Sucesso"
+"Octela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\osrelat.dll", "c:\windows\olesrv\osrelat.tlb", "")
-"Osrelat Instalado com Sucesso"
+"Osrelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\ostela.dll", "c:\windows\olesrv\ostela.tlb", "")
-"Ostela Instalado com Sucesso"
+"Ostela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\pcrelat.dll", "c:\windows\olesrv\pcrelat.tlb", "")
+"Pcrelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\pctela.dll", "c:\windows\olesrv\pctela.tlb", "")
+"Pctela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\pnrelat.dll", "c:\windows\olesrv\pnrelat.tlb", "")
-"Pnrelat Instalado com Sucesso"
+"Pnrelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\pntela.dll", "c:\windows\olesrv\pntela.tlb", "")
-"Pntela Instalado com Sucesso"
+"Pntela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\prrelat.dll", "c:\windows\olesrv\prrelat.tlb", "")
-"Prrelat Instalado com Sucesso"
+"Prrelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\prtela.dll", "c:\windows\olesrv\prtela.tlb", "")
-"Prtela Instalado com Sucesso"
+"Prtela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\rhrelat.dll", "c:\windows\olesrv\rhrelat.tlb", "")
-"Rhrelat Instalado com Sucesso"
+"Rhrelat Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\rhtela.dll", "c:\windows\olesrv\rhtela.tlb", "")
-"Rhtela Instalado com Sucesso"
+"Rhtela Instalado com Sucesso" } catch { }
+try {
 $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\rotinas3c.dll", "c:\windows\olesrv\rotinas3c.tlb", "")
-"Rotinas3c Instalado com Sucesso"
+"Rotinas3c Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\rm.dll", "c:\windows\olesrv\rm.tlb", "")
+"RM Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\rttela.dll", "c:\windows\olesrv\rttela.tlb", "")
+"Rttela Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\satela.dll", "c:\windows\olesrv\satela.tlb", "")
+"Satela Instalado com Sucesso" } catch { }
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\tfrelat.dll", "c:\windows\olesrv\tfrelat.tlb", "")
+"Tfrelat Instalado com Sucesso" } catch { }
+try {
+$comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\tftela.dll", "c:\windows\olesrv\tftela.tlb", "")
+"Tftela Instalado com Sucesso" } catch { }
 
 clear
 
