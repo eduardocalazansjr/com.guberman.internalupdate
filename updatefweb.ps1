@@ -8,6 +8,11 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
 
     $comAdmin = New-Object -com ("COMAdmin.COMAdminCatalog.1")
     try { $comAdmin.ShutdownApplication("Guberman")} catch { }
+    try { 
+        $service = Get-WmiObject -computer 'localhost' Win32_Service -Filter "Name='IISAdmin'"
+        $service.InvokeMethod('StopService',$Null) | Out-Null
+        "IIS finalizado com sucessso!"
+    } catch {"Erro ao finalizar serviço IIS, verifique."}
 
     $net = new-object -ComObject WScript.Network
     try { $net.MapNetworkDrive("q:", "\\192.168.0.201\d\frotadst.600", $false, "GUB\Administrador", "!adm2013#") } catch { }
@@ -99,8 +104,8 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
     //////////////////////////#>
 
     "Desinstalação do sistema concluída com sucesso!`n`n"
-    if(!(Test-Path -Path c:\Install )) { New-Item C:\Install -type directory | Out-Null } else {
-    Remove-Item c:\Install -Force -Recurse | Out-Null }
+    if((Test-Path -Path c:\Install )) {Remove-Item c:\Install -Force -Recurse | Out-Null }
+    if(!(Test-Path -Path c:\Install )) { New-Item C:\Install -type directory | Out-Null } 
     Copy-Item $path\*.exe c:\Install\
     Copy-Item $path\*.sql c:\Install\
     Copy-Item $path\*.rar c:\Install\
@@ -360,6 +365,28 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
     Start-Process C:\Windows\Olesrv\webtela.exe -ArgumentList "-regserver" -wait
     "Webtela registrado!"
     "-------------------"
+
+    "-------------------------------"
+    "Descompactando componentes .NET"
+    $path = "C:\Install"
+    $files = Get-ChildItem $path
+    ForEach ($file in $files) { 
+        if ($file.fullName -match "rar*")
+        {
+            c:\windows\unrar.exe x -y $file.fullName c:\frotaweb | Out-Null
+            Remove-Item $file.fullName -Force | Out-Null
+        }
+    }
+    try{ Rename-Item "C:\frotaweb\Net\Web._config" -newName "web.config" } catch { }
+    try{ Rename-Item "C:\frotaweb\AppMobile\Web._config" -newName "web.config" } catch { }
+    "Componentes .NET descompactados!"
+    "-------------------------------"
+
+    try { 
+        $service = Get-WmiObject -computer 'localhost' Win32_Service -Filter "Name='IISAdmin'"
+        $service.InvokeMethod('StopService',$Null)
+        "IIS inicializado com sucesso!"
+    } catch {"Erro ao iniciar serviço IIS, verifique."}
 
     $title="Instalação Concluída"
     $message="Deseja executar o dicionário de dados?"
