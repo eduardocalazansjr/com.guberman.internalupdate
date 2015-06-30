@@ -292,6 +292,9 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
     $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\matela.dll", "c:\windows\olesrv\matela.tlb", "")
     "Matela Instalado com Sucesso" } catch { }
     try {
+    $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\marelat.dll", "c:\windows\olesrv\marelat.tlb", "")
+    "Marelat Instalado com Sucesso" } catch { }
+    try {
     $comAdmin.InstallComponent("Guberman", "c:\windows\olesrv\nftela.dll", "c:\windows\olesrv\nftela.tlb", "")
     "Nftela Instalado com Sucesso" } catch { }
     try {
@@ -369,10 +372,9 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
         0 { Try { Start-Process $dicionario -wait } Catch { } }
         1 { #<clear#> }
     }
-    
+}
+}
 
-}
-}
-"Instalação concluída. Efetue as alterações necessárias no Frota.UDL / Global.ASA"
+"`nInstalação concluída. Efetue as alterações necessárias no Frota.UDL"
 Read-host "Pressione qualquer tecla para sair..."
 
