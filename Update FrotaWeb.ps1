@@ -1,12 +1,16 @@
 <# ////////////////////////////////////
 //Desinstala os Aplicativos Guberman//
 ///////////////////////////////////// #>
+
+$comAdmin = New-Object -com ("COMAdmin.COMAdminCatalog.1")
+try { $comAdmin.ShutdownApplication("Guberman")} catch { }
+
 $path = Read-Host 'Insira o caminho de instalação da versão desejada'
 
-$uninstallCOM32 = gci "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Frota Web*" } | select UninstallString
-$uninstallCOM64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Frota Web*" } | select UninstallString
-$uninstallSV32 = gci "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Sistema Frota*" } | select UninstallString
-$uninstallSV64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Sistema Frota*" } | select UninstallString
+$uninstallCOM32 = gci "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" -ErrorAction SilentlyContinue | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Frota Web*" } | select UninstallString 
+$uninstallCOM64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" -ErrorAction SilentlyContinue | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Frota Web*" } | select UninstallString 
+$uninstallSV32 = gci "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" -ErrorAction SilentlyContinue | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Sistema Frota*" } | select UninstallString 
+$uninstallSV64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" -ErrorAction SilentlyContinue | foreach { gp $_.PSPath } | ? { $_ -match "Componentes do Sistema Frota*" } | select UninstallString 
 
 if ($uninstallCOM64) {
     $uninstall64 = $uninstallCOM64.UninstallString -Replace "MsiExec.exe","" -Replace "/I","" -Replace "/X",""
@@ -43,7 +47,6 @@ mv c:\windows\frota.udl c:\windows\olesrv\frota.udl
 //Apaga ~ Cria o Aplicativo Guberman no Serviço de Componentes//
 ////////////////////////////////////////////////////////////// #>
 
-$comAdmin = New-Object -com ("COMAdmin.COMAdminCatalog.1")
 $applications = $comAdmin.GetCollection("Applications") 
 $applications.Populate() 
 $index = 0
@@ -96,7 +99,6 @@ Copy-Item $path\*.txt c:\Install\
 "Arquivos copiados com sucesso... iniciando instalação`n"
 
 $path = "C:\Install"
-$fweb = 0
 $files = Get-ChildItem $path
 ForEach ($file in $files) { 
     if ($file.fullName -match "AspCom*")
@@ -105,7 +107,7 @@ ForEach ($file in $files) {
         $executa = $path + "\" + $file
         Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
         "Componentes COM+ Extraídos com sucesso!`n"
-        Remove-Item $executa -ea SilentlyContinue
+        Remove-Item $executa -ErrorAction SilentlyContinue
     }
     if ($file.fullName -match "Serv*")
     {
@@ -113,31 +115,8 @@ ForEach ($file in $files) {
         $executa = $path + "\" + $file
         Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
         "Componentes COM+ (Servidor) Extraídos com sucesso!`n"
-        Remove-Item $executa -ea SilentlyContinue
+        Remove-Item $executa -ErrorAction SilentlyContinue
     } 
-    if ($file.fullName -match "Asp*")
-    {
-        if ($fweb -match 0) {
-            $fweb = 1
-            "$file encontrado! Iniciando instalação...`n"
-            if((Test-Path -Path c:\frotaweb )) {
-                "-------------------------------------------------"
-                "Pasta Frotaweb já existente, efetuando backup"
-                $bckpath = "c:\frotaweb - " + (Get-Date -format "dd-MMM-yyyy")
-                if((Test-Path -Path $bckpath)) { Remove-Item $bckpath -Force -Recurse | Out-Null }
-                New-Item $bckpath -type directory | Out-Null
-                Copy-Item c:\frotaweb\* $bckpath | Out-Null
-                "Backup concluído, proseguindo com a instalação..."
-                "-------------------------------------------------`n"
-            }
-            $executa = $path + "\" + $file
-            Try { Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue } Catch { }
-            "ASP Frotaweb Extraído com Sucesso!"
-            "Copiando Global.ASA...`n"
-            Copy-Item $bckpath\Global.ASA c:\frotaweb\global.asa | Out-Null
-            Remove-Item $executa -ea SilentlyContinue
-        }
-    }
     if ($file.fullName -match "Dic*")
     {
         $dicionario = $path + "\" + $file
@@ -148,6 +127,57 @@ ForEach ($file in $files) {
     }
 }
 
+$fweb = 0
+$files = Get-ChildItem $path
+ForEach ($file in $files) { 
+    if ($file.fullName -match "Asp*")
+    {
+        if ($fweb -match 0) {
+            $fweb = 1
+            "$file encontrado! Iniciando instalação...`n"
+            if((Test-Path -Path c:\frotaweb )) {
+                "-------------------------------------------------"
+                "Pasta Frotaweb já existente, efetuando backup"
+                $bckpath = "c:\frotaweb - " + (Get-Date -format "dd-MMM-yyyy")
+                if((Test-Path -Path $bckpath)) { Remove-Item $bckpath -Force -Recurse | Out-Null }
+                $mvar = $bckpath.replace("c:\", "")
+                Rename-Item -path "C:\frotaweb" -newName $mvar
+                "Backup concluído, proseguindo com a instalação..."
+                "-------------------------------------------------`n"
+            }
+            $executa = $path + "\" + $file
+            Try { Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue } Catch { }
+            "ASP Frotaweb Extraído com Sucesso!"
+            "Copiando Global.ASA..."
+            try { Copy-Item $bckpath\Global.ASA c:\frotaweb\global.asa | Out-Null } catch { Rename-Item "C:\frotaweb\global.as_" -newName "global.asa" }
+            New-Item C:\frotaweb\TEMP -type directory | Out-Null
+            "Adicionando permissões na pasta Frotaweb...`n"
+            try {
+                $sharepath = "C:\frotaweb"
+                $Acl = Get-ACL $SharePath
+                $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("Todos","fullcontrol","ContainerInherit,Objectinherit","none","Allow")
+                $Acl.AddAccessRule($AccessRule)
+                Set-Acl $SharePath $Acl
+                "Permissões configuradas com Sucesso!"
+                "Compartilhando pasta na rede...`n"
+                } catch { "Erro ao configurar permissões, faça manualmente esse processo`n" 
+            }
+            Remove-Item $executa -ea SilentlyContinue
+            if (!(get-wmiObject Win32_Share -filter "name='Frotaweb'")) { 
+                $shares = [WMICLASS]"WIN32_Share"
+                if ($shares.Create("c:\frotaweb", "Frotaweb", 0).ReturnValue -ne 0) {
+                    throw "Erro ao compartilhar a pasta na rede, faça manualmente esse processo`n" 
+                } else { 
+                    $sharepath = "\\localhost\Frotaweb"
+                    $Acl = Get-ACL $SharePath
+                    $AccessRule=New-Object System.Security.AccessControl.FileSystemAccessRule("Todos","FullControl","ContainerInherit,ObjectInherit","None","Allow")
+                    $ACL.SetAccessRule($AccessRule)
+                    "Pasta compartilhada na rede com sucesso!`n" 
+                }
+            }
+        }
+    }
+}
 
 <#///////////////////////////
 //Instala Componentes COM+//
