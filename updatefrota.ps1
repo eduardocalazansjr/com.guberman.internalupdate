@@ -6,14 +6,6 @@ $pc = Read-Host 'Insira o NOME do servidor desejado (EX: SRVWIN17)'
 
 Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
 
-    $comAdmin = New-Object -com ("COMAdmin.COMAdminCatalog.1")
-    try { $comAdmin.ShutdownApplication("Guberman")} catch { }
-    try { 
-        $service = Get-WmiObject -computer 'localhost' Win32_Service -Filter "Name='IISAdmin'"
-        $service.InvokeMethod('StopService',$Null) | Out-Null
-        "IIS finalizado com sucessso!"
-    } catch {"Erro ao finalizar serviço IIS, verifique."}
-
     $net = new-object -ComObject WScript.Network
     try { $net.MapNetworkDrive("q:", "\\192.168.0.201\d\frotadst.600", $false, "GUB\Administrador", "!adm2013#") } catch { }
 
@@ -116,14 +108,6 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
     $path = "C:\Install"
     $files = Get-ChildItem $path
     ForEach ($file in $files) { 
-        if ($file.fullName -match "AspCom*")
-        {
-            "$file encontrado! Iniciando instalação..."
-            $executa = $path + "\" + $file
-            Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
-            "Componentes COM+ Extraídos com sucesso!`n"
-            Remove-Item $executa -ErrorAction SilentlyContinue
-        }
         if ($file.fullName -match "Serv*")
         {
             "$file encontrado! Iniciando instalação..."
@@ -131,6 +115,7 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
             Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
             "Componentes COM+ (Servidor) Extraídos com sucesso!`n"
             Remove-Item $executa -ErrorAction SilentlyContinue
+            $client = $file.replace("Serv", "")
         } 
         if ($file.fullName -match "Dic*")
         {
@@ -140,59 +125,51 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
             Remove-Item $dicionario -ea SilentlyContinue
             $dicionario = "c:\windows\olesrv\" + $file
         }
-    }
-
-    $fweb = 0
-    $files = Get-ChildItem $path
-    ForEach ($file in $files) { 
-        if ($file.fullName -match "Asp*")
+        if ($file.fullName -match ".rar*")
         {
-            if ($fweb -match 0) {
-                $fweb = 1
-                "$file encontrado! Iniciando instalação...`n"
-                if((Test-Path -Path c:\frotaweb )) {
-                    "-------------------------------------------------"
-                    "Pasta Frotaweb já existente, efetuando backup"
-                    $bckpath = "c:\frotaweb - " + (Get-Date -format "dd-MMM-yyyy")
-                    if((Test-Path -Path $bckpath)) { Remove-Item $bckpath -Force -Recurse | Out-Null }
-                    $mvar = $bckpath.replace("c:\", "")
-                    Rename-Item -path "C:\frotaweb" -newName $mvar
-                    "Backup concluído, proseguindo com a instalação..."
-                    "-------------------------------------------------`n"
-                }
-                $executa = $path + "\" + $file
-                Try { Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue } Catch { }
-                "ASP Frotaweb Extraído com Sucesso!"
-                "Copiando Global.ASA..."
-                try { Copy-Item $bckpath\global.asa c:\frotaweb\global.asa | Out-Null } catch { Rename-Item "C:\frotaweb\global.as_" -newName "global.asa" }
-                New-Item C:\frotaweb\TEMP -type directory | Out-Null
-                "Adicionando permissões na pasta Frotaweb...`n"
-                try {
-                    $sharepath = "C:\frotaweb"
-                    $Acl = Get-ACL $SharePath
-                    $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("Todos","fullcontrol","ContainerInherit,Objectinherit","none","Allow")
-                    $Acl.AddAccessRule($AccessRule)
-                    Set-Acl $SharePath $Acl
-                    "Permissões configuradas com Sucesso!"
-                    "Compartilhando pasta na rede...`n"
-                    } catch { "Erro ao configurar permissões, faça manualmente esse processo`n" 
-                }
-                Remove-Item $executa -ea SilentlyContinue
-                if (!(get-wmiObject Win32_Share -filter "name='Frotaweb'")) { 
-                    $shares = [WMICLASS]"WIN32_Share"
-                    if ($shares.Create("c:\frotaweb", "Frotaweb", 0).ReturnValue -ne 0) {
-                        throw "Erro ao compartilhar a pasta na rede, faça manualmente esse processo`n" 
-                    } else { 
-                        $sharepath = "\\localhost\Frotaweb"
-                        $Acl = Get-ACL $SharePath
-                        $AccessRule=New-Object System.Security.AccessControl.FileSystemAccessRule("Todos","FullControl","ContainerInherit,ObjectInherit","None","Allow")
-                        $ACL.SetAccessRule($AccessRule)
-                        "Pasta compartilhada na rede com sucesso!`n" 
-                    }
-                }
-            }
+            try {
+            c:\windows\unrar.exe x -y $file.fullName c:\windows\olesrv | Out-Null
+            Remove-Item $file.fullName -Force | Out-Null } catch { }
         }
     }
+
+ 
+    if((Test-Path -Path c:\Guberman )) {
+        "-------------------------------------------------"
+        "Pasta Guberman já existente, efetuando backup"
+        $bckpath = "c:\Guberman - " + (Get-Date -format "dd-MMM-yyyy")
+        if((Test-Path -Path $bckpath)) { Remove-Item $bckpath -Force -Recurse | Out-Null }
+        $mvar = $bckpath.replace("c:\", "")
+        Rename-Item -path "C:\Guberman" -newName $mvar
+        "Backup concluído, proseguindo com a instalação..."
+        "-------------------------------------------------`n"
+    }
+
+    "Adicionando permissões na pasta Guberman...`n"
+    try {
+        $sharepath = "C:\Guberman"
+        $Acl = Get-ACL $SharePath
+        $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("Todos","fullcontrol","ContainerInherit,Objectinherit","none","Allow")
+        $Acl.AddAccessRule($AccessRule)
+        Set-Acl $SharePath $Acl
+        "Permissões configuradas com Sucesso!"
+        "Compartilhando pasta na rede...`n"
+        } catch { "Erro ao configurar permissões, faça manualmente esse processo`n" 
+    }
+    Remove-Item $executa -ea SilentlyContinue
+    if (!(get-wmiObject Win32_Share -filter "name='Guberman'")) { 
+        $shares = [WMICLASS]"WIN32_Share"
+        if ($shares.Create("c:\guberman", "Guberman", 0).ReturnValue -ne 0) {
+            throw "Erro ao compartilhar a pasta na rede, faça manualmente esse processo`n" 
+        } else { 
+            $sharepath = "\\localhost\guberman"
+            $Acl = Get-ACL $SharePath
+            $AccessRule=New-Object System.Security.AccessControl.FileSystemAccessRule("Todos","FullControl","ContainerInherit,ObjectInherit","None","Allow")
+            $ACL.SetAccessRule($AccessRule)
+            "Pasta compartilhada na rede com sucesso!`n" 
+        }
+    }
+
 
     <#///////////////////////////
     //Instala Componentes COM+//
@@ -359,86 +336,12 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
 
     <#clear#>
 
-    "-------------------"
-    "Registrando WebTela"
-    Start-Process C:\windows\system32\regsvr32.exe -ArgumentList "C:\WINDOWS\OleSrv\MindsEyeReportEnginePro1.ocx /s" -wait
-    Start-Process C:\Windows\Olesrv\webtela.exe -ArgumentList "-regserver" -wait
-    "Webtela registrado!"
-    "-------------------"
+    <#"-------------------"
+    "Registrando WebTela"#>
+    try { Start-Process C:\Windows\Olesrv\webtela.exe -ArgumentList "-regserver" -wait } catch { }
+    <#"Webtela registrado!"
+    "-------------------"#>
 
-    "-------------------------------"
-    "Descompactando componentes .NET"
-    $path = "C:\Install"
-    $files = Get-ChildItem $path
-    ForEach ($file in $files) { 
-        if ($file.fullName -match "rar*")
-        {
-            c:\windows\unrar.exe x -y $file.fullName c:\frotaweb | Out-Null
-            Remove-Item $file.fullName -Force | Out-Null
-        }
-    }
-    try{ Rename-Item "C:\frotaweb\Net\Web._config" -newName "web.config" } catch { }
-    try{ Rename-Item "C:\frotaweb\AppMobile\Web._config" -newName "web.config" } catch { }
-    "Componentes .NET descompactados!"
-    "-------------------------------"
-
-    "-----------------------------------------------"
-    $path = "C:\Install"
-    $files = Get-ChildItem $path
-    ForEach ($file in $files) { 
-        if ($file.fullName -match "Monitor*")
-        {
-            $fexe = $file.ToString().replace(".exe", "")
-            "$fexe encontrado!"
-            $fpath = "c:\install\" + $file
-            $filetrim = $file.ToString().Replace(" ", "_")
-            Rename-Item $fpath -newName $filetrim
-            $instpath = "c:\install\" + $filetrim.replace(".exe", "")
-            $exec = $instpath + ".exe"
-            $args = "/C /T:" + $instpath
-            $copypath = "$instpath" + "\"
-            Start-Process -filepath $exec -argumentlist $args -wait
-            Copy-Item  -Path c:\windows\oleinstall\* -Destination $copypath
-            $exec = $instpath + "\acmsetup.exe"
-            $args = "/t " + $instpath + "\setup.stf /QNT /G c:\"+$filetrim+".txt"
-            Start-Process -filepath $exec -argumentlist $args -wait
-            "$fexe instalado em C:\Guberman\Monitor!"
-            $delpath = $fpath.replace(" ", "_")
-            Remove-Item $instpath -Force -Recurse | Out-Null
-            Remove-Item $delpath | Out-Null
-        }
-    }
-
-    ForEach ($file in $files) { 
-        if ($file.fullName -match "Alerta*")
-        {
-            $fexe = $file.ToString().replace(".exe", "")
-            "$fexe encontrado!"
-            $fpath = "c:\install\" + $file
-            $filetrim = $file.ToString().Replace(" ", "_")
-            Rename-Item $fpath -newName $filetrim
-            $instpath = "c:\install\" + $filetrim.replace(".exe", "")
-            $exec = $instpath + ".exe"
-            $args = "/C /T:" + $instpath
-            $copypath = "$instpath" + "\"
-            Start-Process -filepath $exec -argumentlist $args -wait
-            Copy-Item  -Path c:\windows\oleinstall\* -Destination $copypath
-            $exec = $instpath + "\acmsetup.exe"
-            $args = "/t " + $instpath + "\setup.stf /QNT /G c:\"+$filetrim+".txt"
-            Start-Process -filepath $exec -argumentlist $args -wait
-            "$fexe instalado em C:\Guberman\Monitor!"
-            $delpath = $fpath.replace(" ", "_")
-            Remove-Item $instpath -Force -Recurse | Out-Null
-            Remove-Item $delpath | Out-Null
-        }
-    }
-    "-----------------------------------------------"
-    
-    try { 
-        $service = Get-WmiObject -computer 'localhost' Win32_Service -Filter "Name='IISAdmin'"
-        $service.InvokeMethod('StopService',$Null)
-        "IIS inicializado com sucesso!"
-    } catch {"Erro ao iniciar serviço IIS, verifique."}
 
     $title="Instalação Concluída"
     $message="Deseja executar o dicionário de dados?"
