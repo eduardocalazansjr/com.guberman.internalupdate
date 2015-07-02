@@ -6,6 +6,8 @@ $pc = Read-Host 'Insira o NOME do servidor desejado (EX: SRVWIN17)'
 
 Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
 
+    $comAdmin = New-Object -com ("COMAdmin.COMAdminCatalog.1")
+    try { $comAdmin.ShutdownApplication("Guberman")} catch { }
     $net = new-object -ComObject WScript.Network
     try { $net.MapNetworkDrive("q:", "\\192.168.0.201\d\frotadst.600", $false, "GUB\Administrador", "!adm2013#") } catch { }
 
@@ -107,7 +109,7 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
 
     $path = "C:\Install"
     $files = Get-ChildItem $path
-    ForEach ($file in $files) { 
+     ForEach ($file in $files) { 
         if ($file.fullName -match "Serv*")
         {
             "$file encontrado! Iniciando instalação..."
@@ -115,35 +117,38 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
             Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue
             "Componentes COM+ (Servidor) Extraídos com sucesso!`n"
             Remove-Item $executa -ErrorAction SilentlyContinue
-            $client = $file.replace("Serv", "")
+            $client = $executa.replace("Serv", "")
+            $dic = $executa.replace("Serv", "Dic")
         } 
-        if ($file.fullName -match "Dic*")
-        {
-            $dicionario = $path + "\" + $file
-            Try { Start-Process $executa -ArgumentList "-s /s /V/qn" -wait -ErrorAction SilentlyContinue } Catch { }
-            Copy-Item $dicionario c:\windows\Olesrv\$file | Out-Null
-            Remove-Item $dicionario -ea SilentlyContinue
-            $dicionario = "c:\windows\olesrv\" + $file
-        }
-        if ($file.fullName -match ".rar*")
-        {
-            try {
-            c:\windows\unrar.exe x -y $file.fullName c:\windows\olesrv | Out-Null
-            Remove-Item $file.fullName -Force | Out-Null } catch { }
-        }
     }
-
- 
+    
     if((Test-Path -Path c:\Guberman )) {
         "-------------------------------------------------"
         "Pasta Guberman já existente, efetuando backup"
         $bckpath = "c:\Guberman - " + (Get-Date -format "dd-MMM-yyyy")
-        if((Test-Path -Path $bckpath)) { Remove-Item $bckpath -Force -Recurse | Out-Null }
+        if((Test-Path -Path $bckpath)) { Remove-Item $bckpath -Force -Recurse -ErrorAction SilentlyContinue | Out-Null }
         $mvar = $bckpath.replace("c:\", "")
         Rename-Item -path "C:\Guberman" -newName $mvar
         "Backup concluído, proseguindo com a instalação..."
+        New-Item C:\Guberman -type directory | Out-Null
         "-------------------------------------------------`n"
-    }
+    } else { New-Item C:\Guberman -type directory | Out-Null }
+
+    $path = "C:\Install"
+    $files = Get-ChildItem $path
+        
+    $clientname = $client.replace("C:\Install\", "").replace(".exe", "")
+    $clientpath = $client.replace(".exe", "")
+    $args = "/C /T:" + $clientpath
+    $copypath = "$clientpath" + "\"
+    "$clientname encontrado!"
+    Start-Process -filepath $client -argumentlist $args -wait
+    Copy-Item  -Path c:\windows\oleinstall\* -Destination $copypath
+    $exec = $clientpath + "\acmsetup.exe"
+    $args = "/t " + $clientpath + "\setup.stf /QNT /G c:\"+$clientname+".txt"
+    Start-Process -filepath $exec -argumentlist $args -wait
+    Rename-Item -path "C:\frotaweb\SFROTA.ini" -newName frota.ini
+    "$clientname instalado em C:\Guberman\!"
 
     "Adicionando permissões na pasta Guberman...`n"
     try {
@@ -351,7 +356,7 @@ Invoke-Command -ComputerName $pc -Credential GUB\Administrador -ScriptBlock {
     $result = $host.ui.PromptForChoice($title, $message, $options, 1)
     switch ($result)
     {
-        0 { Try { Start-Process $dicionario -wait } Catch { } }
+        0 { Try { Start-Process $dic -wait } Catch { } }
         1 { #<clear#> }
     }
 }
